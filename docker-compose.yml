@@ -1,0 +1,47 @@
+version: '3'
+services:
+  
+  db:
+    image: mongo:latest
+    ports:
+      - 27017:27017
+  
+  node-http:
+    build:
+      context: .
+    image: node:lts-slim
+    environment:
+      - MONGODB_URI=mongodb://db:27017/test
+    volumes:
+      - .:/app
+    depends_on:
+      - db
+    ports:
+      - 3000:3000
+    command:
+      - /bin/bash
+      - -cxe
+      - |
+        cd /app/
+        yarn add mongodb
+        node index-http
+  
+  node-express:
+    build:
+      context: .
+    image: node:lts-slim
+    environment:
+      - MONGODB_URI=mongodb://db:27017/test
+    volumes:
+      - .:/app
+    depends_on:
+      - db
+    ports:
+      - 3000:3000
+    command:
+      - /bin/bash
+      - -cxe
+      - |
+        cd /app/
+        yarn add mongodb express
+        node index-express

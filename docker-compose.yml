@@ -45,3 +45,42 @@ services:
         cd /app/
         yarn add mongodb express
         node index-express
+
+  node-fastify:
+    build:
+      context: .
+    image: node:lts-slim
+    environment:
+      - MONGODB_URI=mongodb://db:27017/test
+    volumes:
+      - .:/app
+    depends_on:
+      - db
+    ports:
+      - 3000:3000
+    command:
+      - /bin/bash
+      - -cxe
+      - |
+        cd /app/
+        yarn add mongodb fastify
+        node index-fast
+
+  deno:
+    build:
+      context: .
+    image: denoland/deno:alpine
+    environment:
+      - MONGODB_URI=mongodb://db:27017/test
+    volumes:
+      - .:/app
+    depends_on:
+      - db
+    ports:
+      - 3000:3000
+    command:
+      - /bin/sh
+      - -cxe
+      - |
+        cd /app/
+        deno run --allow-net --allow-env index-deno.ts

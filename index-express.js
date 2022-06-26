@@ -8,22 +8,26 @@ const port = env.PORT || 3000;
 
 const app = express();
 
+const handle500 = (err, res) => {
+  console.error(err.stack);
+  res.status(500).send('Oops! Something went wrong 🥹');
+}
+
 app.get('/', (req, res) => {
   res.send('Hello World Express');
 });
 
 app.get('/dows', (req, res) => {
-  api.loadData().then(r => res.json(r));
+  api.loadData()
+    .then(r => res.json(r))
+    .catch(e => handle500(e, res));
 });
 
 app.put('/dows', (req, res) => {
-  api.insertData().then(() => res.json({"insert" : true}));
+  api.insertData()
+    .then(() => res.json({"insert" : true}))
+    .catch(e => handle500(e, res));
 })
-
-app.use((err, req, res, next) => {
-  console.error(err.stack);
-  res.status(500).send('Oops! Something went wrong 🥹');
-});
 
 const server = http.createServer(app);
 

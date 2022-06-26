@@ -10,7 +10,9 @@ const mongoRef = async () => {
 
   console.log(`connection to ${mongodbUri}`)
 
-  _mongoCli = new m.MongoClient(mongodbUri);
+  _mongoCli = new m.MongoClient(mongodbUri, {
+    serverSelectionTimeoutMS: 1000
+  });
 
   await _mongoCli.connect();
   _db = _mongoCli.db('test')
